@@ -2,6 +2,8 @@ package demo.webmyne.com.calculatordemo;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +19,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import java.math.BigDecimal;
 
 import me.grantland.widget.AutofitHelper;
 import me.grantland.widget.AutofitTextView;
@@ -42,7 +46,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView imgThemeChange;
     private LinearLayout lvMain;
     private RelativeLayout rvDisplayLayout;
-    private boolean isBlackThemeEnable =  false;
+    private boolean isBlackThemeEnable = false;
+    private LinearLayout them1RippleView;
+    private LinearLayout them2RippleView;
+    private String finalAns = "0";
+    public static final String SHARED_PREF_NAME = "MY pref";
+    public static final String blackTheme = "Black_Theme";
+    public static final String colorFullTheme = "Color Full Theme";
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +67,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         listener();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sharedPreferences = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        boolean isBlack = sharedPreferences.getBoolean(blackTheme, true);
+        if (isBlack) {
+            applyBlackTheme();
+        } else {
+            applyColorFullTheme();
+        }
+    }
 
     private void font() {
         String font = "fonts/HelveticaNeue-Thin.otf";
@@ -70,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Typeface tf = Typeface.createFromAsset(getResources().getAssets(), font);
         editDisp.setTypeface(tf);
         display.setTypeface(tf);
-
         one.setTypeface(tf);
         two.setTypeface(tf);
         three.setTypeface(tf);
@@ -87,13 +109,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         multi.setTypeface(tf);
         equal.setTypeface(tf);
         delete.setTypeface(tf);
-        lvMain.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.colorLightBlack));
-        rvDisplayLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.colorLightGrey));
+
+        lvMain.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorLightBlack));
+        rvDisplayLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorLightGrey));
 
     }
 
     private void init() {
         mRevealView = (LinearLayout) findViewById(R.id.rippleView);
+        them1RippleView = (LinearLayout) findViewById(R.id.them1RippleView);
+        them2RippleView = (LinearLayout) findViewById(R.id.them2RippleView);
         lvMain = (LinearLayout) findViewById(R.id.lvMain);
         display_screen = (LinearLayout) findViewById(R.id.display_screen);
         rvDisplayLayout = (RelativeLayout) findViewById(R.id.rvDisplayLayout);
@@ -102,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AutofitHelper.create(editDisp);
         AutofitHelper.create(display);
         imgThemeChange = (ImageView) findViewById(R.id.imgThemeChange);
-       // editDisp.setText("");
+        // editDisp.setText("");
         one = (Button) findViewById(R.id.one);
         two = (Button) findViewById(R.id.two);
         three = (Button) findViewById(R.id.three);
@@ -146,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         equal.setOnClickListener(this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -188,7 +214,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     editDisp.setText(editDisp.getText() + "0");
                     count++;
                 }*/
-
                 break;
             case R.id.delete:
                 backSpace(view);
@@ -232,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.division:
                 operationClicked("/");
                 mDivision = true;
-              /*  String div = editDisp.getText().toString();
+               /* String div = editDisp.getText().toString();
                 if (!div.isEmpty()) {
                     mValueOne = Float.parseFloat(editDisp.getText() + "");
                     mDivision = true;
@@ -241,18 +266,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     editDisp.setText("");
                 }*/
                 break;
-
             case R.id.imgThemeChange:
-
-                if(isBlackThemeEnable){
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                if (isBlackThemeEnable) {
                     applyBlackTheme();
+                    editor.putBoolean(blackTheme, true);
+                    editor.commit();
+                    //startBlackAnimation();
                     isBlackThemeEnable = false;
-                }else{
+                } else {
                     applyColorFullTheme();
+                    editor.putBoolean(blackTheme, false);
+                    editor.commit();
+                    // startColorFullAnimation();
                     isBlackThemeEnable = true;
                 }
 
-            break;
+                break;
             case R.id.equal:
                 if (editDisp.length() != 0) {
                     mValue1 = editDisp.getText().toString();
@@ -260,21 +290,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (mAddition) {
                         //str = display.getText().toString() + mValue1;
                         String[] addition = mValue1.split("[+]");
-                        if (addition.length < 2 ) {
+                        if (addition.length < 2) {
 
                         } else {
                             String part1 = addition[0];
                             String part2 = addition[1];
-                            float add = Float.parseFloat(part1) + Float.parseFloat(part2);
-                            Log.e("add", add + "");
-                            //display.setText(Float.toString((float) add));
-                            display.setText(removeTrailingZero(Float.toString(add)));
+                            if (part1.length() != 0 && part2.equals(".")) {
+                                equal.setEnabled(false);
+                            } else {
+                                Float add = Float.parseFloat(part1) + Float.parseFloat(part2);
+                                Log.e("add", add + "");
+                               // display.setText(removeTrailingZero(String.format("%.0f", add)));
+                                display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(add).toPlainString())));
+                            }
+
                         }
-                        mAddition = false;
-                        plus.setEnabled(false);
-                        minus.setEnabled(false);
-                        multi.setEnabled(false);
-                        divide.setEnabled(false);
+                        mAddition = true;
+                        plus.setEnabled(true);
+                        minus.setEnabled(true);
+                        multi.setEnabled(true);
+                        divide.setEnabled(true);
                     }
 
                     if (mSubtract) {
@@ -284,15 +319,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         } else {
                             String part1 = sub[0];
                             String part2 = sub[1];
-                            float mus = Float.parseFloat(part1) - Float.parseFloat(part2);
-                            display.setText(removeTrailingZero(Float.toString(mus)));
+                            if (part1.length() != 0 && part2.equals(".")) {
+                                equal.setEnabled(false);
+                            } else {
+                                Float mus = Float.parseFloat(part1) - Float.parseFloat(part2);
+                                // display.setText(removeTrailingZero(Float.toString(mus)));
+                                display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(mus).toPlainString())));
+                            }
                         }
 
-                        mSubtract = false;
-                        plus.setEnabled(false);
-                        minus.setEnabled(false);
-                        multi.setEnabled(false);
-                        divide.setEnabled(false);
+                        mSubtract = true;
+                        plus.setEnabled(true);
+                        minus.setEnabled(true);
+                        multi.setEnabled(true);
+                        divide.setEnabled(true);
                     }
 
                     if (mMultiplication) {
@@ -302,15 +342,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         } else {
                             String part1 = multipli[0];
                             String part2 = multipli[1];
-                            float mul = Float.parseFloat(part1) * Float.parseFloat(part2);
-                            display.setText(removeTrailingZero(Float.toString(mul)));
+                            if (part1.length() != 0 && part2.equals(".")) {
+                                equal.setEnabled(false);
+                            } else {
+                                Float mul = Float.parseFloat(part1) * Float.parseFloat(part2);
+                                // display.setText(removeTrailingZero(Float.toString(mul)));
+                                display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(mul).toPlainString())));
+                            }
+
                         }
 
-                        mMultiplication = false;
-                        plus.setEnabled(false);
-                        minus.setEnabled(false);
-                        multi.setEnabled(false);
-                        divide.setEnabled(false);
+                        mMultiplication = true;
+                        plus.setEnabled(true);
+                        minus.setEnabled(true);
+                        multi.setEnabled(true);
+                        divide.setEnabled(true);
                     }
 
                     if (mDivision) {
@@ -320,15 +366,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         } else {
                             String part1 = divi[0];
                             String part2 = divi[1];
-                            float div = Float.parseFloat(part1) / Float.parseFloat(part2);
-                            display.setText(removeTrailingZero(Float.toString(div)));
+                            if (part1.length() != 0 && part2.equals(".")) {
+                                equal.setEnabled(false);
+                            } else {
+                                Float dv = Float.parseFloat(part1) / Float.parseFloat(part2);
+                                display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(dv).toPlainString())));
+                                // display.setText(removeTrailingZero(String.format("%.0f", dv)));
+                            }
                         }
-
-                        mDivision = false;
-                        plus.setEnabled(false);
-                        minus.setEnabled(false);
-                        multi.setEnabled(false);
-                        divide.setEnabled(false);
+                        mDivision = true;
+                        plus.setEnabled(true);
+                        minus.setEnabled(true);
+                        multi.setEnabled(true);
+                        divide.setEnabled(true);
                     }
                 }
                 break;
@@ -336,58 +386,152 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void startBlackAnimation() {
+        // finding X and Y co-ordinates
+        final int[] cx = {0};
+        final int[] cy = {(lvMain.getBottom())};
+
+        final int[] startradius = {0};
+        final int[] endradius = {Math.max(lvMain.getWidth(), lvMain.getHeight()) + Math.max(lvMain.getWidth(), lvMain.getHeight())};
+
+
+        ViewTreeObserver viewTreeObserver = lvMain.getViewTreeObserver();
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    lvMain.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    cx[0] = (lvMain.getRight() + lvMain.getLeft());
+                    cy[0] = (lvMain.getBottom());
+
+                    startradius[0] = 0;
+                    endradius[0] = Math.max(lvMain.getWidth(), lvMain.getHeight()) + Math.max(lvMain.getWidth(), lvMain.getHeight());
+                    Log.e("end", endradius[0] + "");
+                    Log.e("end", Math.max(them1RippleView.getPaddingRight(), them1RippleView.getTop()) + "");
+                }
+            });
+        }
+        Log.e("" + cx[0], "" + cy[0]);
+        // to find  radius when icon is tapped for showing layout
+        // performing circular reveal when icon will be tapped
+        Animator animator = ViewAnimationUtils.createCircularReveal(them1RippleView, cx[0], cy[0], startradius[0], endradius[0]);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(800);
+
+        // to show the layout when icon is tapped
+        them1RippleView.setVisibility(View.VISIBLE);
+        animator.start();
+
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                them1RippleView.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void startColorFullAnimation() {
+        // finding X and Y co-ordinates
+        final int[] cx = {0};
+        final int[] cy = {(lvMain.getBottom())};
+
+        final int[] startradius = {0};
+        final int[] endradius = {Math.max(lvMain.getWidth(), lvMain.getHeight()) + Math.max(lvMain.getWidth(), lvMain.getHeight())};
+
+
+        ViewTreeObserver viewTreeObserver = lvMain.getViewTreeObserver();
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    lvMain.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    cx[0] = (lvMain.getRight() + lvMain.getLeft());
+                    cy[0] = (lvMain.getBottom());
+
+                    startradius[0] = 0;
+                    endradius[0] = Math.max(lvMain.getWidth(), lvMain.getHeight()) + Math.max(lvMain.getWidth(), lvMain.getHeight());
+                    Log.e("end", endradius[0] + "");
+                    Log.e("end", Math.max(them2RippleView.getPaddingRight(), them2RippleView.getTop()) + "");
+                }
+            });
+        }
+        Log.e("" + cx[0], "" + cy[0]);
+        // to find  radius when icon is tapped for showing layout
+        // performing circular reveal when icon will be tapped
+        Animator animator = ViewAnimationUtils.createCircularReveal(them2RippleView, cx[0], cy[0], startradius[0], endradius[0]);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.setDuration(800);
+
+        // to show the layout when icon is tapped
+        them2RippleView.setVisibility(View.VISIBLE);
+        animator.start();
+
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                them2RippleView.setVisibility(View.GONE);
+            }
+        });
+    }
 
     //Apply Theme 1 Black
-    private void applyBlackTheme(){
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void applyBlackTheme() {
+        // startBlackAnimation();
         imgThemeChange.setImageResource(R.drawable.theme_2);
-        lvMain.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.colorLightBlack));
-        rvDisplayLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.colorLightGrey));
-        mRevealView.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.theme1RippleColor));
+        lvMain.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorLightBlack));
+        rvDisplayLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorLightGrey));
+        mRevealView.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.theme1RippleColor));
 
-        one.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        two.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        three.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        four.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        five.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        six.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        seven.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        eight.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        nine.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        zero.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        plus.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        minus.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        divide.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        multi.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        equal.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
-        delete.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorSilver));
+        one.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        two.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        three.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        four.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        five.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        six.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        seven.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        eight.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        nine.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        zero.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        plus.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        minus.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        divide.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        multi.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        equal.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
+        delete.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
     }
 
     //Apply Theme 2 ColorFull
-    private void applyColorFullTheme(){
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void applyColorFullTheme() {
+        // startColorFullAnimation();
         imgThemeChange.setImageResource(R.drawable.theme_1);
-        lvMain.setBackground(ContextCompat.getDrawable(MainActivity.this,R.drawable.theme2_gradient));
-        rvDisplayLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        mRevealView.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.theme2RippleColor));
+        lvMain.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.theme2_gradient));
+        rvDisplayLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        mRevealView.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.theme2RippleColor));
 
-        one.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        two.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        three.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        four.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        five.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        six.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        seven.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        eight.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        nine.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        zero.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        plus.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        minus.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        divide.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        multi.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        equal.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
-        delete.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhite));
+        one.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        two.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        three.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        four.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        five.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        six.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        seven.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        eight.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        nine.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        zero.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        plus.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        minus.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        divide.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        multi.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        equal.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
+        delete.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
 
     }
-
 
 
     @Override
@@ -420,7 +564,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     cx[0] = (display_screen.getLeft() + display_screen.getRight());
                     cy[0] = (display_screen.getBottom());
 
-
                     startradius[0] = 0;
                     endradius[0] = Math.max(display_screen.getWidth(), display_screen.getHeight()) + Math.max(display_screen.getWidth(), display_screen.getHeight());
                     Log.e("end", endradius[0] + "");
@@ -447,11 +590,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 editDisp.setText("");
                 display.setText("");
                 count = 0;
-                str="";
+                str = "";
                 plus.setEnabled(true);
                 minus.setEnabled(true);
                 multi.setEnabled(true);
                 divide.setEnabled(true);
+                equal.setEnabled(true);
             }
         });
     }
@@ -679,9 +823,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void operationClicked(String op) {
-        if (editDisp.length() != 0) {
+        if (editDisp.length() != 0 && display.length() == 0) {
             String mvalue1 = editDisp.getText().toString();
             editDisp.setText(mvalue1 + op);
+            count = 0;
+        } else if (editDisp.length() != 0 && display.length() != 0) {
+            String mvalue3 = display.getText().toString();
+            editDisp.setText(mvalue3 + op);
             count = 0;
         } else {
             String text = editDisp.getText().toString();
