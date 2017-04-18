@@ -36,23 +36,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button delete;
     AutofitTextView editDisp;
     float mValueOne, mValueTwo, result;
-    Character op = 'q';
     boolean mAddition, mSubtract, mMultiplication, mDivision;
     Button multi;
     private LinearLayout display_screen;
     private LinearLayout mRevealView;
     String mValue1;
-    String mValue2;
     private ImageView imgThemeChange;
     private LinearLayout lvMain;
     private RelativeLayout rvDisplayLayout;
     private boolean isBlackThemeEnable = false;
     private LinearLayout them1RippleView;
     private LinearLayout them2RippleView;
-    private String finalAns = "0";
     public static final String SHARED_PREF_NAME = "MY pref";
     public static final String blackTheme = "Black_Theme";
-    public static final String colorFullTheme = "Color Full Theme";
+    private int i;
+    private int n=0;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -284,13 +282,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.equal:
-                if (editDisp.length() != 0) {
+                if (editDisp.length() != 0 ) {
                     mValue1 = editDisp.getText().toString();
 
                     if (mAddition) {
                         //str = display.getText().toString() + mValue1;
                         String[] addition = mValue1.split("[+]");
-                        if (addition.length < 2) {
+                        if (addition.length < 2 ) {
 
                         } else {
                             String part1 = addition[0];
@@ -383,7 +381,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
         }
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -536,7 +533,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onLongClick(View view) {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             startAnimation();
         }
@@ -839,6 +835,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
-
 }
