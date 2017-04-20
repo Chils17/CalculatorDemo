@@ -20,7 +20,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import java.math.BigDecimal;
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 
 import me.grantland.widget.AutofitHelper;
 import me.grantland.widget.AutofitTextView;
@@ -28,6 +29,11 @@ import me.grantland.widget.AutofitTextView;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
     public String str = "";
     private int count = 0;
+    private boolean lastNumeric;
+    // Represent that current state is in error or not
+    private boolean stateError;
+    // If true, do not allow to add another DOT
+    private boolean lastDot;
     Button one, two, three, four, five, six, seven, eight, nine, zero;
     Button plus, divide;
     Button dot, equal;
@@ -35,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button minus;
     Button delete;
     AutofitTextView editDisp;
-    float mValueOne, mValueTwo, result;
+    float mValueOne, mValueTwo, result1;
     boolean mAddition, mSubtract, mMultiplication, mDivision;
     Button multi;
     private LinearLayout display_screen;
@@ -49,8 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayout them2RippleView;
     public static final String SHARED_PREF_NAME = "MY pref";
     public static final String blackTheme = "Black_Theme";
-    private int i;
-    private int n=0;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -88,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         "HelveticaNeue-ThinExtObl.otf",
                         "HelveticaNeue-ThinItalic.otf"
                 };
+
         Typeface tf = Typeface.createFromAsset(getResources().getAssets(), font);
         editDisp.setTypeface(tf);
         display.setTypeface(tf);
@@ -110,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         lvMain.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorLightBlack));
         rvDisplayLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorLightGrey));
-
     }
 
     private void init() {
@@ -175,95 +179,83 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.one:
                 editDisp.setText(editDisp.getText() + "1");
+                lastNumeric = true;
                 break;
             case R.id.two:
                 editDisp.setText(editDisp.getText() + "2");
+                lastNumeric = true;
                 break;
             case R.id.three:
                 editDisp.setText(editDisp.getText() + "3");
+                lastNumeric = true;
                 break;
             case R.id.four:
                 editDisp.setText(editDisp.getText() + "4");
+                lastNumeric = true;
                 break;
             case R.id.five:
                 editDisp.setText(editDisp.getText() + "5");
+                lastNumeric = true;
                 break;
             case R.id.six:
                 editDisp.setText(editDisp.getText() + "6");
+                lastNumeric = true;
                 break;
             case R.id.seven:
                 editDisp.setText(editDisp.getText() + "7");
+                lastNumeric = true;
                 break;
             case R.id.eight:
                 editDisp.setText(editDisp.getText() + "8");
+                lastNumeric = true;
                 break;
             case R.id.nine:
                 editDisp.setText(editDisp.getText() + "9");
+                lastNumeric = true;
                 break;
             case R.id.dot:
-                if (count == 0 && editDisp.length() != 0) {
+                if (lastNumeric && !stateError && !lastDot) {
+                    editDisp.append(".");
+                    lastNumeric = false;
+                    lastDot = true;
+                }
+               /* if (count == 0 && editDisp.length() != 0) {
                     editDisp.setText(editDisp.getText() + ".");
                     count++;
-                }
+                }*/
                 break;
             case R.id.zero:
                 editDisp.setText(editDisp.getText() + "0");
-                /*if (editDisp.length() != 0) {
-                    editDisp.setText(editDisp.getText() + "0");
-                    count++;
-                }*/
+                lastNumeric = true;
                 break;
             case R.id.delete:
                 backSpace(view);
                 break;
+
             case R.id.plus:
                 operationClicked("+");
-                mAddition = true;
-               /* String plus = editDisp.getText().toString();
-                if (!plus.isEmpty()) {
-                    mValueOne = Float.parseFloat(editDisp.getText() + "");
-                    mAddition = true;
-                    editDisp.setText(null);
-                } else {
-                    editDisp.setText("");
-                }*/
+                lastNumeric = false;
+                lastDot = false;
                 break;
+
             case R.id.minus:
                 operationClicked("-");
-                mSubtract = true;
-                /*String min = editDisp.getText().toString();
-                if (!min.isEmpty()) {
-                    mValueOne = Float.parseFloat(editDisp.getText() + "");
-                    mSubtract = true;
-                    editDisp.setText(null);
-                } else {
-                    editDisp.setText("");
-                }*/
+                lastNumeric = false;
+                lastDot = false;
                 break;
+
             case R.id.multi:
                 operationClicked("*");
-                mMultiplication = true;
-               /* String mul = editDisp.getText().toString();
-                if (!mul.isEmpty()) {
-                    mValueOne = Float.parseFloat(editDisp.getText() + "");
-                    mMultiplication = true;
-                    editDisp.setText(null);
-                } else {
-                    editDisp.setText("");
-                }*/
+                lastNumeric = false;
+                lastDot = false;
                 break;
+
             case R.id.division:
                 operationClicked("/");
-                mDivision = true;
-               /* String div = editDisp.getText().toString();
-                if (!div.isEmpty()) {
-                    mValueOne = Float.parseFloat(editDisp.getText() + "");
-                    mDivision = true;
-                    editDisp.setText(null);
-                } else {
-                    editDisp.setText("");
-                }*/
+                lastNumeric = false;
+                lastDot = false;
                 break;
+
             case R.id.imgThemeChange:
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 if (isBlackThemeEnable) {
@@ -279,206 +271,132 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // startColorFullAnimation();
                     isBlackThemeEnable = true;
                 }
-
                 break;
+
             case R.id.equal:
-                if (editDisp.length() != 0 ) {
-                    mValue1 = editDisp.getText().toString();
-
-                    if (mAddition) {
-                        //str = display.getText().toString() + mValue1;
-                        String[] addition = mValue1.split("[+]");
-                        if (addition.length < 2 ) {
-
-                        } else {
-                            String part1 = addition[0];
-                            String part2 = addition[1];
-                            if (part1.length() != 0 && part2.equals(".")) {
-                                equal.setEnabled(false);
-                            } else {
-                                Float add = Float.parseFloat(part1) + Float.parseFloat(part2);
-                                Log.e("add", add + "");
-                               // display.setText(removeTrailingZero(String.format("%.0f", add)));
-                                display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(add).toPlainString())));
-                            }
-
-                        }
-                        mAddition = true;
-                        plus.setEnabled(true);
-                        minus.setEnabled(true);
-                        multi.setEnabled(true);
-                        divide.setEnabled(true);
-                    }
-
-                    if (mSubtract) {
-                        String[] sub = mValue1.split("[-]");
-                        if (sub.length < 2) {
-
-                        } else {
-                            String part1 = sub[0];
-                            String part2 = sub[1];
-                            if (part1.length() != 0 && part2.equals(".")) {
-                                equal.setEnabled(false);
-                            } else {
-                                Float mus = Float.parseFloat(part1) - Float.parseFloat(part2);
-                                // display.setText(removeTrailingZero(Float.toString(mus)));
-                                display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(mus).toPlainString())));
-                            }
-                        }
-
-                        mSubtract = true;
-                        plus.setEnabled(true);
-                        minus.setEnabled(true);
-                        multi.setEnabled(true);
-                        divide.setEnabled(true);
-                    }
-
-                    if (mMultiplication) {
-                        String[] multipli = mValue1.split("[*]");
-                        if (multipli.length < 2) {
-
-                        } else {
-                            String part1 = multipli[0];
-                            String part2 = multipli[1];
-                            if (part1.length() != 0 && part2.equals(".")) {
-                                equal.setEnabled(false);
-                            } else {
-                                Float mul = Float.parseFloat(part1) * Float.parseFloat(part2);
-                                // display.setText(removeTrailingZero(Float.toString(mul)));
-                                display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(mul).toPlainString())));
-                            }
-
-                        }
-
-                        mMultiplication = true;
-                        plus.setEnabled(true);
-                        minus.setEnabled(true);
-                        multi.setEnabled(true);
-                        divide.setEnabled(true);
-                    }
-
-                    if (mDivision) {
-                        String[] divi = mValue1.split("[/]");
-                        if (divi.length < 2) {
-
-                        } else {
-                            String part1 = divi[0];
-                            String part2 = divi[1];
-                            if (part1.length() != 0 && part2.equals(".")) {
-                                equal.setEnabled(false);
-                            } else {
-                                Float dv = Float.parseFloat(part1) / Float.parseFloat(part2);
-                                display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(dv).toPlainString())));
-                                // display.setText(removeTrailingZero(String.format("%.0f", dv)));
-                            }
-                        }
-                        mDivision = true;
-                        plus.setEnabled(true);
-                        minus.setEnabled(true);
-                        multi.setEnabled(true);
-                        divide.setEnabled(true);
+                if (lastNumeric && !stateError) {
+                    // Read the expression
+                    String txt = editDisp.getText().toString();
+                    Expression expression = new ExpressionBuilder(txt).build();
+                    try {
+                        // Calculate the result and display
+                        double result = expression.evaluate();
+                        display.setText(removeTrailingZero(Double.toString(result)));
+                        lastDot = true; // Result contains a dot
+                    } catch (ArithmeticException ex) {
+                        // Display an error message
+                        display.setText("Error");
+                        stateError = true;
+                        lastNumeric = false;
                     }
                 }
                 break;
-        }
-    }
+            //Second method for equal
+           /* if (editDisp.length() != 0) {
+                mValue1 = editDisp.getText().toString();
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void startBlackAnimation() {
-        // finding X and Y co-ordinates
-        final int[] cx = {0};
-        final int[] cy = {(lvMain.getBottom())};
+                if (mAddition) {
+                    //str = display.getText().toString() + mValue1;
+                    String[] addition = mValue1.split("[+]");
+                    if (addition.length < 2) {
 
-        final int[] startradius = {0};
-        final int[] endradius = {Math.max(lvMain.getWidth(), lvMain.getHeight()) + Math.max(lvMain.getWidth(), lvMain.getHeight())};
+                    } else {
+                        String part1 = addition[0];
+                        String part2 = addition[1];
+                        if (part1.length() != 0 && part2.equals(".")) {
+                            equal.setEnabled(false);
+                        } else {
+                            Float add = Float.parseFloat(part1) + Float.parseFloat(part2);
+                            Log.e("add", add + "");
+                            // display.setText(removeTrailingZero(String.format("%.0f", add)));
+                            display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(add).toPlainString())));
+                        }
 
-
-        ViewTreeObserver viewTreeObserver = lvMain.getViewTreeObserver();
-        if (viewTreeObserver.isAlive()) {
-            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    lvMain.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    cx[0] = (lvMain.getRight() + lvMain.getLeft());
-                    cy[0] = (lvMain.getBottom());
-
-                    startradius[0] = 0;
-                    endradius[0] = Math.max(lvMain.getWidth(), lvMain.getHeight()) + Math.max(lvMain.getWidth(), lvMain.getHeight());
-                    Log.e("end", endradius[0] + "");
-                    Log.e("end", Math.max(them1RippleView.getPaddingRight(), them1RippleView.getTop()) + "");
+                    }
+                    mAddition = true;
+                    plus.setEnabled(true);
+                    minus.setEnabled(true);
+                    multi.setEnabled(true);
+                    divide.setEnabled(true);
                 }
-            });
-        }
-        Log.e("" + cx[0], "" + cy[0]);
-        // to find  radius when icon is tapped for showing layout
-        // performing circular reveal when icon will be tapped
-        Animator animator = ViewAnimationUtils.createCircularReveal(them1RippleView, cx[0], cy[0], startradius[0], endradius[0]);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setDuration(800);
 
-        // to show the layout when icon is tapped
-        them1RippleView.setVisibility(View.VISIBLE);
-        animator.start();
+                if (mSubtract) {
+                    String[] sub = mValue1.split("[-]");
 
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                them1RippleView.setVisibility(View.GONE);
-            }
-        });
-    }
+                    if (sub.length < 2) {
+                    } else {
+                        String part1 = sub[0];
+                        String part2 = sub[1];
+                        if (part1.length() != 0 && part2.equals(".")) {
+                            equal.setEnabled(false);
+                        } else {
+                            Float mus = Float.parseFloat(part1) - Float.parseFloat(part2);
+                            // display.setText(removeTrailingZero(Float.toString(mus)));
+                            Log.e("mus", mus + "");
+                            display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(mus).toPlainString())));
+                        }
+                    }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void startColorFullAnimation() {
-        // finding X and Y co-ordinates
-        final int[] cx = {0};
-        final int[] cy = {(lvMain.getBottom())};
-
-        final int[] startradius = {0};
-        final int[] endradius = {Math.max(lvMain.getWidth(), lvMain.getHeight()) + Math.max(lvMain.getWidth(), lvMain.getHeight())};
-
-
-        ViewTreeObserver viewTreeObserver = lvMain.getViewTreeObserver();
-        if (viewTreeObserver.isAlive()) {
-            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    lvMain.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    cx[0] = (lvMain.getRight() + lvMain.getLeft());
-                    cy[0] = (lvMain.getBottom());
-
-                    startradius[0] = 0;
-                    endradius[0] = Math.max(lvMain.getWidth(), lvMain.getHeight()) + Math.max(lvMain.getWidth(), lvMain.getHeight());
-                    Log.e("end", endradius[0] + "");
-                    Log.e("end", Math.max(them2RippleView.getPaddingRight(), them2RippleView.getTop()) + "");
+                    mSubtract = true;
+                    plus.setEnabled(true);
+                    minus.setEnabled(true);
+                    multi.setEnabled(true);
+                    divide.setEnabled(true);
                 }
-            });
+
+                if (mMultiplication) {
+                    String[] multipli = mValue1.split("[*]");
+                    if (multipli.length < 2) {
+
+                    } else {
+                        String part1 = multipli[0];
+                        String part2 = multipli[1];
+                        if (part1.length() != 0 && part2.equals(".")) {
+                            equal.setEnabled(false);
+                        } else {
+                            Float mul = Float.parseFloat(part1) * Float.parseFloat(part2);
+                            // display.setText(removeTrailingZero(Float.toString(mul)));
+                            display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(mul).toPlainString())));
+                        }
+
+                    }
+
+                    mMultiplication = true;
+                    plus.setEnabled(true);
+                    minus.setEnabled(true);
+                    multi.setEnabled(true);
+                    divide.setEnabled(true);
+                }
+
+                if (mDivision) {
+                    String[] divi = mValue1.split("[/]");
+                    if (divi.length < 2) {
+
+                    } else {
+                        String part1 = divi[0];
+                        String part2 = divi[1];
+                        if (part1.length() != 0 && part2.equals(".")) {
+                            equal.setEnabled(false);
+                        } else {
+                            Float dv = Float.parseFloat(part1) / Float.parseFloat(part2);
+                            display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(dv).toPlainString())));
+                            // display.setText(removeTrailingZero(String.format("%.0f", dv)));
+                        }
+                    }
+                    mDivision = true;
+                    plus.setEnabled(true);
+                    minus.setEnabled(true);
+                    multi.setEnabled(true);
+                    divide.setEnabled(true);
+                }
+            }*/
         }
-        Log.e("" + cx[0], "" + cy[0]);
-        // to find  radius when icon is tapped for showing layout
-        // performing circular reveal when icon will be tapped
-        Animator animator = ViewAnimationUtils.createCircularReveal(them2RippleView, cx[0], cy[0], startradius[0], endradius[0]);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setDuration(800);
-
-        // to show the layout when icon is tapped
-        them2RippleView.setVisibility(View.VISIBLE);
-        animator.start();
-
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                them2RippleView.setVisibility(View.GONE);
-            }
-        });
     }
+
 
     //Apply Theme 1 Black
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void applyBlackTheme() {
-        // startBlackAnimation();
         imgThemeChange.setImageResource(R.drawable.theme_2);
         lvMain.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorLightBlack));
         rvDisplayLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorLightGrey));
@@ -505,7 +423,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Apply Theme 2 ColorFull
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void applyColorFullTheme() {
-        // startColorFullAnimation();
         imgThemeChange.setImageResource(R.drawable.theme_1);
         lvMain.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.theme2_gradient));
         rvDisplayLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
@@ -536,8 +453,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             startAnimation();
         }
-//        display_screen.setBackgroundResource(R.drawable.button_ripple);
-        //str = "";
         return false;
     }
 
@@ -587,11 +502,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 display.setText("");
                 count = 0;
                 str = "";
-                plus.setEnabled(true);
-                minus.setEnabled(true);
-                multi.setEnabled(true);
-                divide.setEnabled(true);
-                equal.setEnabled(true);
+                lastNumeric = false;
+                stateError = false;
+                lastDot = false;
             }
         });
     }
@@ -835,4 +748,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
 }
