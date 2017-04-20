@@ -732,15 +732,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void operationClicked(String op) {
-        if (editDisp.length() != 0 && display.length() == 0) {
+        if (editDisp.length() != 0 ) {
             String mvalue1 = editDisp.getText().toString();
             editDisp.setText(mvalue1 + op);
             count = 0;
-        } else if (editDisp.length() != 0 && display.length() != 0) {
+        } /*else if (editDisp.length() != 0 && display.length() != 0) {
             String mvalue3 = display.getText().toString();
             editDisp.setText(mvalue3 + op);
             count = 0;
-        } else {
+        }*/ else {
             String text = editDisp.getText().toString();
             if (text.length() > 0) {
                 String mvalue2 = text.substring(0, text.length() - 1) + op;
