@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String SHARED_PREF_NAME = "MY pref";
     public static final String blackTheme = "Black_Theme";
     private SharedPreferences sharedPreferences;
+    private String text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 lastNumeric = true;
                 break;
             case R.id.dot:
-                if (lastNumeric && !stateError && !lastDot) {
+                if (lastNumeric && !lastDot) {
                     editDisp.append(".");
                     lastNumeric = false;
                     lastDot = true;
@@ -234,26 +235,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.plus:
                 operationClicked("+");
-                lastNumeric = false;
-                lastDot = false;
                 break;
 
             case R.id.minus:
                 operationClicked("-");
-                lastNumeric = false;
-                lastDot = false;
                 break;
 
             case R.id.multi:
                 operationClicked("*");
-                lastNumeric = false;
-                lastDot = false;
                 break;
 
             case R.id.division:
                 operationClicked("/");
-                lastNumeric = false;
-                lastDot = false;
                 break;
 
             case R.id.imgThemeChange:
@@ -274,21 +267,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.equal:
-                if (lastNumeric && !stateError) {
-                    // Read the expression
-                    String txt = editDisp.getText().toString();
-                    Expression expression = new ExpressionBuilder(txt).build();
-                    try {
-                        // Calculate the result and display
-                        double result = expression.evaluate();
-                        display.setText(removeTrailingZero(Double.toString(result)));
-                        lastDot = true; // Result contains a dot
-                    } catch (ArithmeticException ex) {
-                        // Display an error message
-                        display.setText("Error");
-                        stateError = true;
-                        lastNumeric = false;
+                if (lastNumeric) {
+                    String t = editDisp.getText().toString();
+                    String lastChar = String.valueOf(t.charAt(t.length() - 1));
+                    if (lastChar.equals("+")) {
+                        equal.setEnabled(false);
+                    } else if (lastChar.equals("-")) {
+                        equal.setEnabled(false);
+                    } else if (lastChar.equals("*")) {
+                        equal.setEnabled(false);
+                    } else if (lastChar.equals("/")) {
+                        equal.setEnabled(false);
+                    } else {
+                        // Read the expression
+                        String txt = editDisp.getText().toString();
+                        Expression expression = new ExpressionBuilder(txt).build();
+                        try {
+                            // Calculate the result and display
+                            double result = expression.evaluate();
+                            display.setText(removeTrailingZero(Double.toString(result)));
+                            lastDot = true; // Result contains a dot
+                        } catch (ArithmeticException ex) {
+                            // Display an error message
+                            display.setText("Error");
+                            lastNumeric = false;
+                        }
                     }
+                    equal.setEnabled(true);
                 }
                 break;
             //Second method for equal
@@ -502,6 +507,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 display.setText("");
                 count = 0;
                 str = "";
+                equal.setEnabled(true);
                 lastNumeric = false;
                 stateError = false;
                 lastDot = false;
@@ -725,6 +731,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String str = editDisp.getText().toString();
         if (str.length() > 0) {
             str = str.substring(0, str.length() - 1);
+            equal.setEnabled(true);
             editDisp.setText(str);
         } else if (str.length() <= 1) {
             display.setText("");
@@ -732,10 +739,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void operationClicked(String op) {
-        if (editDisp.length() != 0 ) {
+        if (editDisp.length() != 0 && lastNumeric) {
             String mvalue1 = editDisp.getText().toString();
             editDisp.setText(mvalue1 + op);
             count = 0;
+            lastNumeric = false;
+            lastDot = false;
         } /*else if (editDisp.length() != 0 && display.length() != 0) {
             String mvalue3 = display.getText().toString();
             editDisp.setText(mvalue3 + op);
