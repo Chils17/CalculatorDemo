@@ -95,34 +95,31 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/seven"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/seven"
                     android:textColor="@color/colorSilver"
                     android:textSize="@dimen/sp20" />
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/eight"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/eight"
                     android:textColor="@color/colorSilver"
                     android:textSize="@dimen/sp20" />
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/nine"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/nine"
                     android:textColor="@color/colorSilver"
@@ -137,34 +134,31 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/four"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/four"
                     android:textColor="@color/colorSilver"
                     android:textSize="@dimen/sp20" />
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/five"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/five"
                     android:textColor="@color/colorSilver"
                     android:textSize="@dimen/sp20" />
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/six"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/six"
                     android:textColor="@color/colorSilver"
@@ -179,34 +173,31 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/one"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/one"
                     android:textColor="@color/colorSilver"
                     android:textSize="@dimen/sp20" />
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/two"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/two"
                     android:textColor="@color/colorSilver"
                     android:textSize="@dimen/sp20" />
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/three"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/three"
                     android:textColor="@color/colorSilver"
@@ -221,34 +212,31 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/dot"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/dot"
                     android:textColor="@color/colorSilver"
                     android:textSize="@dimen/sp20" />
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/zero"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/zero"
                     android:textColor="@color/colorSilver"
                     android:textSize="@dimen/sp20" />
 
-                <android.support.v7.widget.AppCompatButton
+                <Button
                     android:id="@+id/delete"
                     android:layout_width="@dimen/dp0"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ripple"
                     android:padding="@dimen/dp8"
                     android:text="@string/delete"
                     android:textColor="@color/colorSilver"
@@ -264,45 +252,41 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatButton
+            <Button
                 android:id="@+id/division"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/ripple"
                 android:padding="@dimen/dp8"
                 android:text="@string/division"
                 android:textColor="@color/colorSilver"
                 android:textSize="@dimen/sp20" />
 
-            <android.support.v7.widget.AppCompatButton
+            <Button
                 android:id="@+id/multi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/ripple"
                 android:padding="@dimen/dp8"
                 android:text="@string/multiplication"
                 android:textColor="@color/colorSilver"
                 android:textSize="@dimen/sp20" />
 
-            <android.support.v7.widget.AppCompatButton
+            <Button
                 android:id="@+id/minus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/ripple"
                 android:padding="@dimen/dp8"
                 android:text="@string/minus"
                 android:textColor="@color/colorSilver"
                 android:textSize="@dimen/sp20" />
 
-            <android.support.v7.widget.AppCompatButton
+            <Button
                 android:id="@+id/plus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/ripple"
                 android:padding="@dimen/dp8"
                 android:text="@string/plus"
                 android:textColor="@color/colorSilver"
@@ -362,7 +346,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/ripple"
             android:text="@string/equal"
             android:textColor="@color/colorSilver"
             android:textSize="@dimen/sp20" />

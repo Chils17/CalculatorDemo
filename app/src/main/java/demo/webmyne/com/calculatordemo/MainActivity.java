@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import android.widget.RelativeLayout;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+import java.math.BigDecimal;
+
 import me.grantland.widget.AutofitHelper;
 import me.grantland.widget.AutofitTextView;
 
@@ -34,19 +37,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean stateError;
     // If true, do not allow to add another DOT
     private boolean lastDot;
-    Button one, two, three, four, five, six, seven, eight, nine, zero;
-    Button plus, divide;
-    Button dot, equal;
+    private Button one, two, three, four, five, six, seven, eight, nine, zero;
+    private Button plus, divide;
+    private Button dot, equal;
     AutofitTextView display;
-    Button minus;
-    Button delete;
-    AutofitTextView editDisp;
-    float mValueOne, mValueTwo, result1;
-    boolean mAddition, mSubtract, mMultiplication, mDivision;
-    Button multi;
+    private Button minus;
+    private Button delete;
+    private AutofitTextView editDisp;
+    private float mValueOne, mValueTwo, result1;
+    private boolean mAddition, mSubtract, mMultiplication, mDivision;
+    private Button multi;
     private LinearLayout display_screen;
     private LinearLayout mRevealView;
-    String mValue1;
+    private String mValue1;
     private ImageView imgThemeChange;
     private LinearLayout lvMain;
     private RelativeLayout rvDisplayLayout;
@@ -56,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String SHARED_PREF_NAME = "MY pref";
     public static final String blackTheme = "Black_Theme";
     private SharedPreferences sharedPreferences;
-    private String text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         font();
 
+        setRippleBackground();
+
         listener();
+    }
+
+    private void setRippleBackground() {
+        if (Build.VERSION.SDK_INT >= 21) {
+            lvMain.setBackgroundResource(R.drawable.ripple);
+            one.setBackgroundResource(R.drawable.ripple);
+            two.setBackgroundResource(R.drawable.ripple);
+            three.setBackgroundResource(R.drawable.ripple);
+            four.setBackgroundResource(R.drawable.ripple);
+            five.setBackgroundResource(R.drawable.ripple);
+            six.setBackgroundResource(R.drawable.ripple);
+            seven.setBackgroundResource(R.drawable.ripple);
+            eight.setBackgroundResource(R.drawable.ripple);
+            nine.setBackgroundResource(R.drawable.ripple);
+            zero.setBackgroundResource(R.drawable.ripple);
+            dot.setBackgroundResource(R.drawable.ripple);
+            delete.setBackgroundResource(R.drawable.ripple);
+            plus.setBackgroundResource(R.drawable.ripple);
+            minus.setBackgroundResource(R.drawable.ripple);
+            multi.setBackgroundResource(R.drawable.ripple);
+            divide.setBackgroundResource(R.drawable.ripple);
+            equal.setBackgroundResource(R.drawable.ripple);
+        } else {
+            lvMain.setBackground(getResources().getDrawable(R.drawable.theme2_gradient));
+            one.setBackgroundColor(Color.TRANSPARENT);
+            two.setBackgroundColor(Color.TRANSPARENT);
+            three.setBackgroundColor(Color.TRANSPARENT);
+            four.setBackgroundColor(Color.TRANSPARENT);
+            five.setBackgroundColor(Color.TRANSPARENT);
+            six.setBackgroundColor(Color.TRANSPARENT);
+            seven.setBackgroundColor(Color.TRANSPARENT);
+            eight.setBackgroundColor(Color.TRANSPARENT);
+            nine.setBackgroundColor(Color.TRANSPARENT);
+            zero.setBackgroundColor(Color.TRANSPARENT);
+            dot.setBackgroundColor(Color.TRANSPARENT);
+            delete.setBackgroundColor(Color.TRANSPARENT);
+            plus.setBackgroundColor(Color.TRANSPARENT);
+            minus.setBackgroundColor(Color.TRANSPARENT);
+            multi.setBackgroundColor(Color.TRANSPARENT);
+            divide.setBackgroundColor(Color.TRANSPARENT);;
+            equal.setBackgroundColor(Color.TRANSPARENT);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -229,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 editDisp.setText(editDisp.getText() + "0");
                 lastNumeric = true;
                 break;
+
             case R.id.delete:
                 backSpace(view);
                 break;
@@ -272,12 +319,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String lastChar = String.valueOf(t.charAt(t.length() - 1));
                     if (lastChar.equals("+")) {
                         equal.setEnabled(false);
-                    } else if (lastChar.equals("-")) {
+                        return;
+                    }
+                    if (lastChar.equals("-")) {
                         equal.setEnabled(false);
-                    } else if (lastChar.equals("*")) {
+                        return;
+                    }
+                    if (lastChar.equals("*")) {
                         equal.setEnabled(false);
-                    } else if (lastChar.equals("/")) {
+                        return;
+                    }
+                    if (lastChar.equals("/")) {
                         equal.setEnabled(false);
+                        return;
                     } else {
                         // Read the expression
                         String txt = editDisp.getText().toString();
@@ -285,7 +339,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         try {
                             // Calculate the result and display
                             double result = expression.evaluate();
-                            display.setText(removeTrailingZero(Double.toString(result)));
+                            display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(result).toPlainString())));
+                            //display.setText(removeTrailingZero(Double.toString(result)));
                             lastDot = true; // Result contains a dot
                         } catch (ArithmeticException ex) {
                             // Display an error message
@@ -295,6 +350,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     equal.setEnabled(true);
                 }
+                equal.setEnabled(true);
                 break;
             //Second method for equal
            /* if (editDisp.length() != 0) {
@@ -398,7 +454,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
     //Apply Theme 1 Black
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void applyBlackTheme() {
@@ -451,7 +506,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         delete.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
 
     }
-
 
     @Override
     public boolean onLongClick(View view) {
@@ -731,11 +785,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String str = editDisp.getText().toString();
         if (str.length() > 0) {
             str = str.substring(0, str.length() - 1);
-            equal.setEnabled(true);
             editDisp.setText(str);
         } else if (str.length() <= 1) {
             display.setText("");
         }
+        equal.setEnabled(true);
     }
 
     private void operationClicked(String op) {
