@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -176,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AutofitHelper.create(editDisp);
         AutofitHelper.create(display);
         imgThemeChange = (ImageView) findViewById(R.id.imgThemeChange);
-        // editDisp.setText("");
+        display.setText("0");
         one = (Button) findViewById(R.id.one);
         two = (Button) findViewById(R.id.two);
         three = (Button) findViewById(R.id.three);
@@ -226,46 +227,63 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.one:
                 editDisp.setText(editDisp.getText() + "1");
+                equal.setEnabled(true);
                 lastNumeric = true;
                 break;
             case R.id.two:
                 editDisp.setText(editDisp.getText() + "2");
+                equal.setEnabled(true);
                 lastNumeric = true;
                 break;
             case R.id.three:
                 editDisp.setText(editDisp.getText() + "3");
+                equal.setEnabled(true);
                 lastNumeric = true;
                 break;
             case R.id.four:
                 editDisp.setText(editDisp.getText() + "4");
+                equal.setEnabled(true);
                 lastNumeric = true;
                 break;
             case R.id.five:
                 editDisp.setText(editDisp.getText() + "5");
+                equal.setEnabled(true);
                 lastNumeric = true;
                 break;
             case R.id.six:
                 editDisp.setText(editDisp.getText() + "6");
+                equal.setEnabled(true);
                 lastNumeric = true;
                 break;
             case R.id.seven:
                 editDisp.setText(editDisp.getText() + "7");
+                equal.setEnabled(true);
                 lastNumeric = true;
                 break;
             case R.id.eight:
                 editDisp.setText(editDisp.getText() + "8");
+                equal.setEnabled(true);
                 lastNumeric = true;
                 break;
             case R.id.nine:
                 editDisp.setText(editDisp.getText() + "9");
+                equal.setEnabled(true);
                 lastNumeric = true;
                 break;
             case R.id.dot:
-                if (lastNumeric && !lastDot) {
+                equal.setEnabled(true);
+                if (!lastNumeric && !lastDot) {
                     editDisp.append(".");
-                    lastNumeric = false;
+                    lastNumeric = true;
                     lastDot = true;
                 }
+                else if(lastNumeric &&!lastDot)
+                {
+                    editDisp.append(".");
+                    lastNumeric = false;
+                    lastDot=true;
+                }
+
                /* if (count == 0 && editDisp.length() != 0) {
                     editDisp.setText(editDisp.getText() + ".");
                     count++;
@@ -273,11 +291,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.zero:
                 editDisp.setText(editDisp.getText() + "0");
+                equal.setEnabled(true);
                 lastNumeric = true;
                 break;
 
             case R.id.delete:
                 backSpace(view);
+                equal.setEnabled(true);
                 break;
 
             case R.id.plus:
@@ -316,39 +336,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.equal:
                 if (lastNumeric) {
                     String t = editDisp.getText().toString();
-                    String lastChar = String.valueOf(t.charAt(t.length() - 1));
-                    if (lastChar.equals("+")) {
-                        equal.setEnabled(false);
-                        return;
-                    }
-                    if (lastChar.equals("-")) {
-                        equal.setEnabled(false);
-                        return;
-                    }
-                    if (lastChar.equals("*")) {
-                        equal.setEnabled(false);
-                        return;
-                    }
-                    if (lastChar.equals("/")) {
-                        equal.setEnabled(false);
-                        return;
-                    } else {
-                        // Read the expression
-                        String txt = editDisp.getText().toString();
-                        Expression expression = new ExpressionBuilder(txt).build();
-                        try {
-                            // Calculate the result and display
-                            double result = expression.evaluate();
-                            display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(result).toPlainString())));
-                            //display.setText(removeTrailingZero(Double.toString(result)));
-                            lastDot = true; // Result contains a dot
-                        } catch (ArithmeticException ex) {
-                            // Display an error message
-                            display.setText("Error");
-                            lastNumeric = false;
+                    if(!TextUtils.isEmpty(t))
+                    {
+                        String lastChar = String.valueOf(t.charAt(t.length() - 1));
+                        if (lastChar.equals("+")) {
+                            equal.setEnabled(false);
+                            return;
                         }
+                        if (lastChar.equals("-")) {
+                            equal.setEnabled(false);
+                            return;
+                        }
+                        if (lastChar.equals("*")) {
+                            equal.setEnabled(false);
+                            return;
+                        }
+                        if (lastChar.equals("/")) {
+                            equal.setEnabled(false);
+                            return;
+                        } else {
+                            // Read the expression
+                            String txt = editDisp.getText().toString();
+                            Expression expression = new ExpressionBuilder(txt).build();
+                            try {
+                                // Calculate the result and display
+                                double result = expression.evaluate();
+                                display.setText(removeTrailingZero(String.valueOf(BigDecimal.valueOf(result).toPlainString())));
+                                //display.setText(removeTrailingZero(Double.toString(result)));
+                                lastDot = true; // Result contains a dot
+                            } catch (ArithmeticException ex) {
+                                // Display an error message
+                                display.setText("Error");
+                                lastNumeric = false;
+                            }
+                        }
+                        equal.setEnabled(true);
                     }
-                    equal.setEnabled(true);
                 }
                 equal.setEnabled(true);
                 break;
@@ -511,6 +534,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onLongClick(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             startAnimation();
+        }
+        else
+        {
+            editDisp.setText("");
+            display.setText("");
+            equal.setEnabled(true);
+            lastNumeric = false;
+            stateError = false;
+            lastDot = false;
         }
         return false;
     }
@@ -787,12 +819,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             str = str.substring(0, str.length() - 1);
             editDisp.setText(str);
         } else if (str.length() <= 1) {
-            display.setText("");
+            editDisp.setText("");
         }
-        equal.setEnabled(true);
+        if(TextUtils.isEmpty(str))
+        {
+            lastNumeric=false;
+        }
     }
 
     private void operationClicked(String op) {
+        equal.setEnabled(true);
         if (editDisp.length() != 0 && lastNumeric) {
             String mvalue1 = editDisp.getText().toString();
             editDisp.setText(mvalue1 + op);

@@ -27,7 +27,7 @@
             <me.grantland.widget.AutofitTextView
                 android:id="@+id/editDisplay"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp0"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:cursorVisible="false"
@@ -44,7 +44,7 @@
             <me.grantland.widget.AutofitTextView
                 android:id="@+id/display"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp0"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:cursorVisible="false"
@@ -326,7 +326,7 @@
         android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.2"
+        android:layout_weight="0.1"
         android:orientation="horizontal">
 
         <ImageView
