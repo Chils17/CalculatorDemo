@@ -103,7 +103,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/seven"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20" />
+                    android:textSize="@dimen/sp30" />
 
                 <Button
                     android:id="@+id/eight"
@@ -113,7 +113,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/eight"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20" />
+                    android:textSize="@dimen/sp30" />
 
                 <Button
                     android:id="@+id/nine"
@@ -123,7 +123,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/nine"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20" />
+                    android:textSize="@dimen/sp30" />
             </LinearLayout>
 
             <LinearLayout
@@ -142,7 +142,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/four"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20" />
+                    android:textSize="@dimen/sp30" />
 
                 <Button
                     android:id="@+id/five"
@@ -152,7 +152,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/five"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20" />
+                    android:textSize="@dimen/sp30" />
 
                 <Button
                     android:id="@+id/six"
@@ -162,7 +162,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/six"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20" />
+                    android:textSize="@dimen/sp30" />
             </LinearLayout>
 
             <LinearLayout
@@ -181,7 +181,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/one"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20" />
+                    android:textSize="@dimen/sp30" />
 
                 <Button
                     android:id="@+id/two"
@@ -191,7 +191,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/two"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20" />
+                    android:textSize="@dimen/sp30" />
 
                 <Button
                     android:id="@+id/three"
@@ -201,7 +201,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/three"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20" />
+                    android:textSize="@dimen/sp30" />
             </LinearLayout>
 
             <LinearLayout
@@ -220,7 +220,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/dot"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20" />
+                    android:textSize="@dimen/sp30" />
 
                 <Button
                     android:id="@+id/zero"
@@ -230,7 +230,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/zero"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20" />
+                    android:textSize="@dimen/sp30" />
 
                 <Button
                     android:id="@+id/delete"
@@ -240,7 +240,7 @@
                     android:padding="@dimen/dp8"
                     android:text="@string/delete"
                     android:textColor="@color/colorSilver"
-                    android:textSize="@dimen/sp20"
+                    android:textSize="@dimen/sp30"
                     android:textStyle="normal" />
 
             </LinearLayout>
@@ -260,7 +260,7 @@
                 android:padding="@dimen/dp8"
                 android:text="@string/division"
                 android:textColor="@color/colorSilver"
-                android:textSize="@dimen/sp20" />
+                android:textSize="@dimen/sp30" />
 
             <Button
                 android:id="@+id/multi"
@@ -270,7 +270,7 @@
                 android:padding="@dimen/dp8"
                 android:text="@string/multiplication"
                 android:textColor="@color/colorSilver"
-                android:textSize="@dimen/sp20" />
+                android:textSize="@dimen/sp30" />
 
             <Button
                 android:id="@+id/minus"
@@ -280,7 +280,7 @@
                 android:padding="@dimen/dp8"
                 android:text="@string/minus"
                 android:textColor="@color/colorSilver"
-                android:textSize="@dimen/sp20" />
+                android:textSize="@dimen/sp30" />
 
             <Button
                 android:id="@+id/plus"
@@ -290,7 +290,7 @@
                 android:padding="@dimen/dp8"
                 android:text="@string/plus"
                 android:textColor="@color/colorSilver"
-                android:textSize="@dimen/sp20" />
+                android:textSize="@dimen/sp30" />
         </LinearLayout>
     </LinearLayout>
 
@@ -339,7 +339,7 @@
             android:src="@drawable/theme_2"
             android:text="@string/ok"
             android:textColor="@color/colorSilver"
-            android:textSize="@dimen/sp20" />
+            android:textSize="@dimen/sp30" />
 
         <Button
             android:id="@+id/equal"
@@ -348,7 +348,7 @@
             android:layout_weight="1"
             android:text="@string/equal"
             android:textColor="@color/colorSilver"
-            android:textSize="@dimen/sp20" />
+            android:textSize="@dimen/sp30" />
     </LinearLayout>
 
 </LinearLayout>
