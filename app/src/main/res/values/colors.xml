@@ -9,6 +9,7 @@
     <color name="colorLightGrey">#212121</color>
     <color name="colorSilver">#C0C0C0</color>
     <color name="colorWhite">#ffffff</color>
+    <color name="colorWhiteSmoke">#F7F7F7 </color>
 
     <color name="theme1RippleColor">#424242</color>
     <color name="theme2RippleColor">#F5F5F5</color>

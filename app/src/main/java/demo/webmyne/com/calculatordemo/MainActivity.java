@@ -485,6 +485,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rvDisplayLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorLightGrey));
         mRevealView.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.theme1RippleColor));
 
+        display.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhiteSmoke));
         one.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
         two.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
         three.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorSilver));
@@ -511,6 +512,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rvDisplayLayout.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
         mRevealView.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.theme2RippleColor));
 
+        display.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorGrey));
         one.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
         two.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
         three.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorWhite));
